@@ -1,35 +1,55 @@
 import os
 from pathlib import Path
-import secrets
-from logger_config import setup_logger
-import dotenv
+from src.logger_config import setup_logger
+from dotenv import load_dotenv, set_key
+from cryptography.fernet import Fernet
+import bcrypt
 
 class CryptManager:
     def __init__(self):
-        self.logger = setup_logger(__name__)
-        """if we don't have a key we need create it!"""
+        self.logger = setup_logger(__name__)  # logger creating
+        self.__fernet = None
         self.logger.debug("Checking env for keys...")
-        if Path(".env").exists and self.__is_keys_exists():
-            self.__keys = self.__load_keys()
+
+        # Загружаем .env перед чтением переменных
+        env_path = Path(__file__).resolve().parent.parent / '.env'
+        load_dotenv(env_path)
+
+        try:  # try to load keys
+            self.__key = self.__load_key()
             self.logger.info("Keys successfully downloaded")
-        else:
-            self.logger.warning("keys is not found!")
-            self.__keys = self.__first_run()
+        except ValueError:  # if error then create it
+            self.logger.warning("EnvironmentError")
+            self.__key = self.__create_key(env_path)
             self.logger.info("Keys were created successfully")
-            
-        
-    def __load_keys(self) -> dict:
-        pass
-    def __first_run(self) -> dict:
-        keys = {
-            'encryption_key': self.__generate_fernet_ket(),
-            'hmac_key': self.__generate_crypto_random_key(32),
-            'jwt_secret': self.__generate_crypto_random_key(64),
-            'api_key_salt': self.__generate_crypto_random_key(16)
-        }
-        # save to env yo
-        for key, value in keys.items():
-            dotenv.set_key('.env', key, value)
-        return keys
-    def __is_keys_exists(self) -> bool:
-        pass
+
+        self.__fernet = Fernet(self.__key)
+
+    def __load_key(self) -> bytes:
+        ENCRYPTION_KEY = os.getenv('ENCRYPTION_KEY')
+        if ENCRYPTION_KEY is None:
+            raise ValueError
+        ENCRYPTION_KEY = bytes.fromhex(ENCRYPTION_KEY)
+        return ENCRYPTION_KEY
+
+    def __create_key(self, env_path: Path) -> bytes:
+        ENCRYPTION_KEY = Fernet.generate_key()
+        # save to env with absolute path
+        set_key(str(env_path), 'ENCRYPTION_KEY', ENCRYPTION_KEY.hex())
+        return ENCRYPTION_KEY
+
+    """encrypt&decrypt data"""
+    def encrypt(self, text: str) -> str:
+        # str -> bytes -> encrypt -> bytes -> str
+        return self.__fernet.encrypt(text.encode()).decode()
+
+    def decrypt(self, text: str) -> str:
+        # str -> bytes -> decrypt -> bytes -> str
+        return self.__fernet.decrypt(text.encode()).decode()
+
+    """password"""
+    def hash_password(self, password: str) -> str:
+        return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+
+    def verify_password(self, password: str, hashed: str) -> bool:
+        return bcrypt.checkpw(password.encode(), hashed.encode())
