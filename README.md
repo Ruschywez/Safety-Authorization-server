@@ -44,3 +44,17 @@ I don't want to create a too complicated system:
 #### Is there anything else?
 Also I want to create all tables to database for first start of server.
 I will use SQLite with peewee.
+
+
+#### Stack
+
+| feature | why is this there? |
+| - | - |
+| aiosqlite | SQLite driver |
+| peewee  | My favorite ORM for python |
+| types-peewee | Peewee types support for PyLance |
+| peewee-aio | Async support for peewee |
+| bcrypt | |
+| cryptography | |
+| fastAPI | Simple HTTP API |
+| 
