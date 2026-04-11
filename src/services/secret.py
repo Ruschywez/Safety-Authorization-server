@@ -1,2 +1,0 @@
-class SecretService:
-    pass
