@@ -40,19 +40,29 @@ class CryptManager:
         return ENCRYPTION_KEY
 
     """encrypt&decrypt data methods"""
-    def encrypt(self, text: str) -> str:
+    async def encrypt(self, text: str) -> str:
         if not text:
             raise ValueError("Text cannot be empty or None!")
         # str -> bytes -> encrypt -> bytes -> str
         return self.__fernet.encrypt(text.encode()).decode()
 
-    def decrypt(self, text: str) -> str:
+    async def decrypt(self, text: str) -> str:
         # str -> bytes -> decrypt -> bytes -> str
         return self.__fernet.decrypt(text.encode()).decode()
+    
+    async def encrypt_bytes(self, data: bytes) -> bytes:
+        if not data:
+            raise ValueError("Data cannot be empty or None!")
+        # bytes -> encrypt -> bytes
+        return self.__fernet.encrypt(data)
+
+    async def decrypt(self, data: bytes) -> bytes:
+        # bytes -> decrypt -> bytes
+        return self.__fernet.decrypt(data)
 
     """password's methods"""
-    def hash_password(self, password: str) -> str:
+    async def hash_password(self, password: str) -> str:
         return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
 
-    def verify_password(self, password: str, hashed: str) -> bool:
+    async def verify_password(self, password: str, hashed: str) -> bool:
         return bcrypt.checkpw(password.encode(), hashed.encode())

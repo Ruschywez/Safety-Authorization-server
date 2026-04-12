@@ -5,13 +5,13 @@ class Usr(Model):
     login = CharField(max_length=64, unique=True)
     password = CharField(max_length=72)
     email = CharField(max_length=256, unique=True)
-    avatar = CharField(max_length=256, null=True)
+    avatar = CharField(max_length=256, null=True, unique=True)
     class Meta:
         table_name="usr"
 class Secret(Model):
     id = AutoField(primary_key=True, column_name="id")
     text = TextField(column_name="text")
-    image_path = CharField(max_length=256, null=True, column_name="image_path")
+    image_path = CharField(max_length=256, null=True, column_name="image_path", unique=True)
     user_id = ForeignKeyField(Usr, backref="secrets", on_delete='CASCADE', on_update='CASCADE', column_name="user_id")
     class Meta:
         table_name="secret"

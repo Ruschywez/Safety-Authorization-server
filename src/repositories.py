@@ -4,9 +4,9 @@ from typing import Optional, List, Union
 from datetime import date
 
 class UsrRepository:
-    def __init__(self, manager: Manager, model: Usr):
+    def __init__(self, manager: Manager):
         self.manager: Manager = manager
-        self.model: Usr = model
+        self.model: Usr = Usr
     async def get_by_id(self, id: int) -> Optional[Usr]:
         return await self.manager.get_or_none(self.model, id=id)
     async def get_all(self) -> List[Usr]:
@@ -59,12 +59,17 @@ class UsrRepository:
             query = self.model.delete().where(self.model.id == usr)
         return await self.manager.execute(query) > 0
 class SessionRepository:
-    def __init__(self, manager: Manager, model: Session):
+    def __init__(self, manager: Manager):
         self.manager: Manager = manager
-        self.model: Session = model
+        self.model: Session = Session
     async def get_by_key(self, key: str) -> Optional[Session]:
         # Primary key of Session class has name "key", not the "id"
         return await self.manager.get_or_none(self.model, key=key)
+    async def get_user_id_by_key(self, key: str) -> Optional[int]:
+        session = await self.get_by_key(key)
+        if session is not None:
+            return session.user_id.id
+        return None
     async def get_all(self) -> List[Session]:
         query = self.model.select()
         return await list(self.manager.fetchall(query))
@@ -74,22 +79,22 @@ class SessionRepository:
     async def get_active_sessions(self, date: date) -> List[Session]:
         query = self.model.select().where(self.model.expires_at >= date)
         return await list(self.manager.fetchall(query))
-    async def get_by_Usr(self, usr: Union[Usr, int]) -> List[Session]:
+    async def get_by_usr(self, usr: Union[Usr, int]) -> List[Session]:
         if isinstance(usr, Usr):
             query = self.model.select().where(self.model.Usr_id == usr.id)
         else:
             query = self.model.select().where(self.model.Usr_id == usr)
         return await self.manager.fetchall(query)
     async def create(self, key: str, usr: Union[int, Usr], created_at: date, expires_at: date) -> Session:
-        return await self.manager.create(self.model, key=key, Usr_id=usr, created_at=created_at, expires_at=expires_at)
+        return await self.manager.create(self.model, key=key, user_id=usr, created_at=created_at, expires_at=expires_at)
     async def delete(self, key: str) -> bool:
         query = self.model.delete().where(self.model.key == key)
         return await self.manager.execute(query) > 0
 
 class SecretRepository:
-    def __init__(self, manager: Manager, model: Secret):
+    def __init__(self, manager: Manager):
         self.manager = manager
-        self.model = model
+        self.model: Secret = Secret
     async def get_by_id(self, id: int) -> Optional[Secret]:
         return await self.manager.get_or_none(self.model, id=id)
     async def get_all(self) -> List[Secret]:
