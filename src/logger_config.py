@@ -1,8 +1,7 @@
 import logging
 import sys
-from pathlib import Path
 from datetime import datetime
-
+from src.const import LOG_PATH
 def setup_logger(name: str) -> logging.Logger:
     # Creating logger with name, for example "main"
     logger = logging.getLogger(name)
@@ -20,11 +19,9 @@ def setup_logger(name: str) -> logging.Logger:
     logger.addHandler(console_handler)
 
     # file output
-    project_root = Path(__file__).resolve().parent.parent
-    logs_dir = project_root / 'logs'
-    logs_dir.mkdir(exist_ok=True) # we need create dir 'logs' if it's not exist
+    LOG_PATH.mkdir(exist_ok=True) # we need create dir 'logs' if it's not exist
     # creating name for file
-    log_file = logs_dir / f'{datetime.now().strftime("%Y-%m-%d")}_{name}.log'
+    log_file = LOG_PATH / f'{datetime.now().strftime("%Y-%m-%d")}_{name}.log'
     
     file_handler = logging.FileHandler(log_file, encoding='utf-8')
     file_handler.setFormatter(log_format)
