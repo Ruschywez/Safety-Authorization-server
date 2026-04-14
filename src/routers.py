@@ -52,8 +52,7 @@ async def logout(session_key: _KeyRequest = _Depends()) -> bool:
     # key will be deleted from sessions
     try:
         return await _session_service.logout(session_key=session_key)
-    except Exception as e:
-        raise _HTTPException(status_code=_status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+    except Exception as e: raise _HTTPException(status_code=_status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 """
     User's requests
     1) /registration creating new user

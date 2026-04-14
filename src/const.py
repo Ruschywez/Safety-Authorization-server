@@ -10,3 +10,5 @@ LOG_PATH = _Path(__file__).resolve().parent.parent / 'logs'
 ENV_PATH = _Path(__file__).resolve().parent.parent / '.env'
 
 EXPIRATION_TIME = 30 # days
+
+EMAIL_RE_PATTERN = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
