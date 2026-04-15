@@ -1,5 +1,6 @@
 .env
 .venv/
+.venv_server/
 database.db
 __pycache__/
 /src/__pycache__/

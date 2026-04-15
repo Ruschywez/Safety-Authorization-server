@@ -1,14 +1,14 @@
 from pathlib import Path
 import uuid 
-from fastapi import HTTPException, status
+from src.exceptions import AvatarNotFoundError, SecretImageNotFoundError
 from src.encryption import CryptManager
-
+from src.const import AVATAR_PATH, SECRET_PATH
 
 class ImageManager:
     def __init__(self, crypt_manager: CryptManager):
-        self.crypt_manager = crypt_manager
-        self.avatar_save_path = Path(__file__).resolve().parent / 'resources' / 'avatars'
-        self.secret_save_path = Path(__file__).resolve().parent / 'resources' / 'secrets'
+        self.crypt_manager: CryptManager = crypt_manager
+        self.avatar_save_path: Path = AVATAR_PATH
+        self.secret_save_path: Path = SECRET_PATH
 
     async def generate_random_avatar_name(self) -> str:
         name = ''.join(str(uuid.uuid4()) for _ in range(6)) + ".png"
@@ -49,7 +49,7 @@ class ImageManager:
     async def load_avatar_image(self, avatar: Path) -> bytes:
         filepath = self.avatar_save_path / avatar
         if not filepath.exists():
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Image not found")
+            raise AvatarNotFoundError()
         with open(filepath, 'rb') as f:
             return f.read()
     
@@ -57,19 +57,19 @@ class ImageManager:
         # need encrypted secret image to decrypt it
         filepath = self.secret_save_path / secret
         if not filepath.exists():
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Image not found")
+            raise SecretImageNotFoundError()
         with open(filepath, 'rb') as f:
             secret = f.read()
         return await self.crypt_manager.decrypt_bytes(secret)
     async def delete_avatar_image(self, avatar: Path) -> bool:
         filepath = self.avatar_save_path / avatar
         if not filepath.exists():
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Image not found")
+            raise AvatarNotFoundError()
         filepath.unlink()
         return True
     async def delete_secret_image(self, secret: Path) -> bool:
         filepath = self.secret_save_path / secret
         if not filepath.exists():
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Image not found")
+            raise SecretImageNotFoundError()
         filepath.unlink()
         return True

@@ -1,13 +1,19 @@
-from pathlib import Path as _Path
-from src.entities import Usr as _Usr, Session as _Session, Secret as _Secret
+from pathlib import Path
+from src.entities import Usr, Session, Secret
 
-DB_PATH = _Path(__file__).resolve().parent.parent / 'database.db'
+CORE_PATH = Path(__file__).resolve().parent.parent
+
+DB_PATH = CORE_PATH / 'database.db'
+LOG_PATH = CORE_PATH / 'logs'
+ENV_PATH = CORE_PATH / '.env'
+
+AVATAR_PATH = CORE_PATH / 'resources' / 'avatars'
+SECRET_PATH = CORE_PATH / 'resources' / 'secrets'
+
 DB_URL = f"sqlite:///{DB_PATH.as_posix()}"
-DB_TABLES = (_Usr, _Session, _Secret)
+DB_TABLES = (Usr, Session, Secret)
 
-LOG_PATH = _Path(__file__).resolve().parent.parent / 'logs'
 
-ENV_PATH = _Path(__file__).resolve().parent.parent / '.env'
 
 EXPIRATION_TIME = 30 # days
 
