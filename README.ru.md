@@ -1,7 +1,10 @@
 # Безопасная авторизация (сервер)
 localization:
-- [eng](/README.md)
-- [ru](/README.ru.md)
+- [eng](/README.md)  
+- [ru](/README.ru.md)  
+
+[клиент](https://github.com/Ruschywez/secure-authorization-client.git)
+
 Это простой проект для само-обучения, созданный, чтобы научиться "как создавать безопасный API".
 
 Когда я создавал проекты в прошлом, они были простые и небезопасные.

@@ -1,7 +1,10 @@
-## Safety Authorization (Server)
+## Secure Authorization (server)
 localization:
-- [eng](/README.md)
-- [ru](/README.ru.md)
+- [eng](/README.md)  
+- [ru](/README.ru.md)  
+
+[client](https://github.com/Ruschywez/secure-authorization-client.git)
+
 It's a simple project for self-learning, created with the goal of learning "how to create a safe API".
 
 When I was creating systems in the past, they were really simple and unsafe.
