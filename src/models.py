@@ -8,7 +8,7 @@ from src.const import EMAIL_RE_PATTERN
 """
 
 class KeyRequest(BaseModel):
-    session_key: str = Query(..., length=252)
+    session_key: str = Query(..., min_length=64, max_length=256)
 
 class RegistrationRequest(BaseModel):
     login: str = Query(..., min_length=6, max_length=64)

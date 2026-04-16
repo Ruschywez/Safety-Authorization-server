@@ -1,9 +1,7 @@
 import os
 from dotenv import load_dotenv as load_dotenv, set_key
 from cryptography.fernet import Fernet
-import bcrypt
 # own code
-from src.logger_config import setup_logger
 from src.const import ENV_PATH
 
 class CryptManager:
